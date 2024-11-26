@@ -1,0 +1,9 @@
+{
+    "name": "SpeedBoost",
+    "symbol": "B",
+    "trigger": "onPickup",
+    "effect": "increaseSpeed",
+    "duration": 3,
+    "value": 2
+  }
+  

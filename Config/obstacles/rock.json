@@ -1,0 +1,8 @@
+{
+    "name": "Rock",
+    "symbol": "R",
+    "trigger": "onMove",
+    "effect": "blockPath",
+    "duration": 5
+  }
+  

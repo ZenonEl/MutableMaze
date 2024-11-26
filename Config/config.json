@@ -1,0 +1,30 @@
+{
+    "maze": {
+      "width": 41,
+      "height": 21,
+      "symbols": {
+        "wall": "#",
+        "path": ".",
+        "start": "S",
+        "exit": "E"
+      },
+      "regenerationTrigger": {
+        "type": "moves",
+        "value": 10
+      }
+    },
+    "player": {
+      "startX": 1,
+      "startY": 1,
+      "symbol": "P"
+    },
+    "difficulty": {
+      "level": "medium"
+    },
+    "timer": {
+      "mode": "increasing",
+      "initialTime": 0,
+      "timePerMove": 1
+    }
+  }
+  
