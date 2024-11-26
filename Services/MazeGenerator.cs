@@ -20,6 +20,9 @@ namespace MutableMaze
         private char startSymbol;
         private char endSymbol;
 
+        // Игрок
+        public (int x, int y) currentPlayerPosition;
+
         public Maze(int width = 21, int height = 21, char wallSymbol = '#', char pathSymbol = '.', char playerSymbol = 'P', char startSymbol = 'S', char endSymbol = 'E')
         {
             // Проверка  четности
@@ -142,6 +145,7 @@ namespace MutableMaze
             if (possiblePositions.Count > 0)
             {
                 var playerPosition = possiblePositions[0];
+                currentPlayerPosition = playerPosition;
                 grid[playerPosition.y, playerPosition.x] = playerSymbol;
             }
         }
@@ -152,6 +156,21 @@ namespace MutableMaze
             {
                 positions.Add((x, y)); // Добавляем позицию в список возможных позиций для игрока
             }
+        }
+
+        public bool CheckPatchForMove((int x, int y) moveDirection)
+        {
+            if (grid[moveDirection.y, moveDirection.x] == pathSymbol)
+            {
+                return true;
+            }
+            return false;
+        }
+        public void UpdateGrid((int x, int y) moveDirection)
+        {
+            grid[currentPlayerPosition.y, currentPlayerPosition.x] = pathSymbol;
+            grid[moveDirection.y, moveDirection.x] = playerSymbol;
+            currentPlayerPosition = moveDirection;
         }
     }
 }
