@@ -11,7 +11,6 @@ namespace MutableMaze
             config.LoadConfig("Config/config.json");
             GameMenu.PrintMenu();
             GameMenu.GetChoiceInput();
-
         }
     }
 }

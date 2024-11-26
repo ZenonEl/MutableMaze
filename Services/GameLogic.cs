@@ -11,7 +11,7 @@ namespace MutableMaze
         {
             Console.Clear();
             maze.PrintMaze();
-            MovePlayer();
+            ProcessGameInputTriggers();
         }
 
         public static void LoadGame()
@@ -19,7 +19,7 @@ namespace MutableMaze
             Console.WriteLine("Loading game...");
         }
 
-        public static void MovePlayer()
+        public static void ProcessGameInputTriggers()
         {
             string moveInput = Console.ReadKey().Key.ToString();
             bool result;
@@ -52,7 +52,11 @@ namespace MutableMaze
                 Console.Clear();
                 maze.PrintMaze();
             }
-            MovePlayer();
+            ReGeneratedMaze _ = new(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
+            moveDirection, config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, config.Maze.Symbols.Path, config.Player.Symbol);
+            Console.Clear();
+            _.PrintMaze();
+            ProcessGameInputTriggers();
         }
 
         public static bool CheckForExit(Player player, char[,] maze)
