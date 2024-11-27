@@ -380,7 +380,7 @@ public class ReGeneratedMaze
                 else if (i == currentPlayerPosition.y && j == currentPlayerPosition.x)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(playerSymbol); // Отображаем игрока
+                    Console.Write(playerSymbol);
                 }
                 else if (grid[i,j] == wallSymbol)
                 {
