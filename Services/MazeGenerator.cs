@@ -6,7 +6,7 @@ namespace MutableMaze
     public class Maze
     {
         // Сетка
-        private char[,] grid;
+        public char[,] grid;
         private int width;
         private int height;
         private Random random = new Random();
@@ -157,7 +157,14 @@ namespace MutableMaze
                 positions.Add((x, y)); // Добавляем позицию в список возможных позиций для игрока
             }
         }
-
+        public bool CheckPatchForExit((int x, int y) moveDirection)
+        {
+            if (moveDirection == endPoint)
+            {
+                return true;
+            }
+            return false;
+        }
         public bool CheckPatchForMove((int x, int y) moveDirection)
         {
             if (grid[moveDirection.y, moveDirection.x] == pathSymbol)
@@ -177,7 +184,7 @@ namespace MutableMaze
 public class ReGeneratedMaze
 {
     // Сетка
-    private char[,] grid;
+    public char[,] grid;
     private int width;
     private int height;
     private Random random = new Random();
@@ -340,7 +347,20 @@ public class ReGeneratedMaze
 
         return position; // Если не найдено ни одной проходимой клетки (что маловероятно), возвращаем исходную позицию
     }
-
+    public void UpdateGrid((int x, int y) moveDirection)
+    {
+        grid[currentPlayerPosition.y, currentPlayerPosition.x] = pathSymbol;
+        grid[moveDirection.y, moveDirection.x] = playerSymbol;
+        currentPlayerPosition = moveDirection;
+    }
+    public bool CheckPatchForMove((int x, int y) moveDirection)
+    {
+        if (grid[moveDirection.y, moveDirection.x] == pathSymbol)
+        {
+            return true;
+        }
+        return false;
+    }
     public void PrintMaze()
     {
         for (int i = 0; i < height; i++)

@@ -50,6 +50,8 @@ namespace MutableMaze
             {
                 case "1":
                     GameLogic.StartGame(); // v1 done
+                    PrintMenu();
+                    GetChoiceInput();
                     break;
                 case "2":
                     GameLogic.LoadGame();

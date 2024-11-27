@@ -6,6 +6,8 @@ namespace MutableMaze
     {
         private static GameConfig config = GameConfig.Instance;
         private static Maze maze = new Maze(config.Maze.Width, config.Maze.Height, config.Maze.Symbols.Wall, config.Maze.Symbols.Path, config.Player.Symbol, config.Maze.Symbols.Start, config.Maze.Symbols.Exit);
+        private static int movesToRegenMaze = 0;
+        private static int allmoves = 0;
 
         public static void StartGame()
         {
@@ -24,6 +26,7 @@ namespace MutableMaze
             string moveInput = Console.ReadKey().Key.ToString();
             bool result;
             (int x, int y) moveDirection;
+            allmoves += 1;
 
             switch (moveInput)
             {
@@ -52,10 +55,27 @@ namespace MutableMaze
                 Console.Clear();
                 maze.PrintMaze();
             }
-            ReGeneratedMaze _ = new(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
-            moveDirection, config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, config.Maze.Symbols.Path, config.Player.Symbol);
-            Console.Clear();
-            _.PrintMaze();
+            switch (config.Maze.RegenerationTrigger.Type)
+            {
+                case "moves":
+                if (config.Maze.RegenerationTrigger.Value == movesToRegenMaze)
+                {
+                    ReGeneratedMaze reGeneratedMaze = new(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
+                    moveDirection, config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, config.Maze.Symbols.Path, config.Player.Symbol);
+                    maze.grid = reGeneratedMaze.grid;
+                    Console.Clear();
+                    movesToRegenMaze = 0;
+                    reGeneratedMaze.PrintMaze();
+                }
+                movesToRegenMaze += 1;
+                break;
+            }
+            if (maze.CheckPatchForExit(moveDirection))
+            {
+                GameHistory history = new();
+                history.SaveGameHistory(0, allmoves);
+                return;
+            }
             ProcessGameInputTriggers();
         }
 
