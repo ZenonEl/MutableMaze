@@ -1,30 +1,33 @@
 {
-    "maze": {
-      "width": 51,
-      "height": 51,
-      "symbols": {
-        "wall": "#",
-        "path": ".",
-        "start": "S",
-        "exit": "E"
-      },
-      "regenerationTrigger": {
-        "type": "moves",
-        "value": 5
-      }
+  "maze": {
+    "width": 31,
+    "height": 31,
+    "symbols": {
+      "wall": "#",
+      "path": ".",
+      "start": "S",
+      "exit": "E"
     },
-    "player": {
-      "startX": 1,
-      "startY": 1,
-      "symbol": "P"
-    },
-    "difficulty": {
-      "level": "medium"
-    },
-    "timer": {
-      "mode": "increasing",
-      "initialTime": 0,
-      "timePerMove": 1
+    "regenerationTrigger": {
+      "type": "moves",
+      "value": 10
     }
+  },
+  "player": {
+    "startX": 1,
+    "startY": 1,
+    "symbol": "P"
+  },
+  "difficulty": {
+    "level": "medium"
+  },
+  "timer": {
+    "mode": "increasing",
+    "initialTime": 0,
+    "timePerMove": 1
+  },
+  "medium": {
+    "RegenerationActivationRange": 0.3,
+    "CountOfRegeneratedStructures": 1
   }
-  
+}

@@ -38,12 +38,57 @@ namespace MutableMaze
         public static void PrintSettings()
         {
             Console.WriteLine("Your current settings:");
-            Console.WriteLine($@"{config.Maze.Width} {config.Maze.Height} 
-{config.Maze.Symbols.Start} {config.Maze.Symbols.Exit} 
-{config.Maze.Symbols.Wall} {config.Maze.Symbols.Path} 
-{config.Player.Symbol} 
-{config.Maze.RegenerationTrigger.Type} {config.Maze.RegenerationTrigger.Value}");
-            Console.ReadLine();
+            Console.WriteLine($@"1) Width and Height: {config.Maze.Width} {config.Maze.Height} 
+2) Start and Exit Symbols: {config.Maze.Symbols.Start} {config.Maze.Symbols.Exit} 
+3) Wall and Path Symbols: {config.Maze.Symbols.Wall} {config.Maze.Symbols.Path} 
+4) Player Symbol: {config.Player.Symbol} 
+5) Regeneration Trigger: {config.Maze.RegenerationTrigger.Value} {config.Maze.RegenerationTrigger.Type}
+Write the number of the setting you want to change, or press enter to go back to the menu. After writing the number, press enter and write the new value.
+Example: 1 *press enter*
+51 21");
+            string choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    Console.WriteLine("Enter the new width and height:");
+                    choice = Console.ReadLine();
+                    config.Maze.Width = int.Parse(choice.Split(" ")[0]);
+                    config.Maze.Height = int.Parse(choice.Split(" ")[1]);
+                    break;
+                case "2":
+                    Console.WriteLine("Enter the new start and exit symbols:");
+                    choice = Console.ReadLine();
+                    config.Maze.Symbols.Start = choice.Split(" ")[0][0];
+                    config.Maze.Symbols.Exit = choice.Split(" ")[1][0];
+                    break;
+                case "3":
+                    Console.WriteLine("Enter the new wall and path symbols:");
+                    choice = Console.ReadLine();
+                    config.Maze.Symbols.Wall = choice.Split(" ")[0][0];
+                    config.Maze.Symbols.Path = choice.Split(" ")[1][0];
+                    break;
+                case "4":
+                    Console.WriteLine("Enter the new player symbol:");
+                    choice = Console.ReadLine();
+                    config.Player.Symbol = choice[0];
+                    break;
+                case "5":
+                    Console.WriteLine("Enter the new regeneration trigger:");
+                    choice = Console.ReadLine();
+                    config.Maze.RegenerationTrigger.Value = int.Parse(choice.Split(" ")[0]);
+                    config.Maze.RegenerationTrigger.Type = choice.Split(" ")[1];
+                    break;
+
+            }
+            config.SaveConfig("Config/config.json");
+            Console.WriteLine("Settings saved. Return to menu? Write Yes (Y/y) or press enter to continue editing settings.");
+            choice = Console.ReadLine();
+            List<string> yesAnswers = ["yes", "y", "Yes", "Y"];
+            if (yesAnswers.Contains(choice))
+            {
+                return;
+            }
+            PrintSettings();
         }
 
         public static void PrintHelp()
@@ -93,7 +138,7 @@ namespace MutableMaze
                     break;
                 case "5":
                     Console.Clear();
-                    PrintSettings();
+                    PrintSettings(); // v1 done
                     PrintMenu();
                     GetChoiceInput();
                     break;

@@ -31,7 +31,7 @@ public class ReGeneratedMaze
         this.height = height % 2 == 0 ? height + 1 : height; // Четная высота
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        currentPlayerPosition = playerPosition; // Устанавливаем позицию игрока
+        currentPlayerPosition = playerPosition;
         this.startSymbol = startSymbol;
         this.endSymbol = endSymbol;
 
@@ -43,13 +43,11 @@ public class ReGeneratedMaze
         InitializeGrid();
         GenerateMaze();
 
-        // Проверка позиции игрока после генерации лабиринта
         if (IsWall(currentPlayerPosition))
         {
             currentPlayerPosition = FindNearestPath(currentPlayerPosition);
         }
 
-        // Устанавливаем символ игрока в сетке
         grid[currentPlayerPosition.y, currentPlayerPosition.x] = playerSymbol; 
     }
 
@@ -59,13 +57,12 @@ public class ReGeneratedMaze
         {
             for (int j = 0; j < width; j++)
             {
-                grid[i, j] = wallSymbol; // Заполняем стены
+                grid[i, j] = wallSymbol;
             }
         }
 
-        // Устанавливаем фиксированные точки
         grid[startPoint.y, startPoint.x] = pathSymbol;
-        grid[endPoint.y, endPoint.x] = pathSymbol; // Обеспечиваем проходимость точки выхода
+        grid[endPoint.y, endPoint.x] = pathSymbol;
     }
 
     private void GenerateMaze()
@@ -97,14 +94,12 @@ public class ReGeneratedMaze
             }
         }
 
-        // Обеспечиваем проходимость стартовой и конечной точек
         grid[startPoint.y, startPoint.x] = pathSymbol;
 
-        // Убедитесь, что выход также проходимый
         if (IsWall(endPoint) != true)
         {
-            grid[endPoint.y -1, endPoint.x] = pathSymbol; // Превращаем выход в путь
-            grid[endPoint.y, endPoint.x -1] = pathSymbol; // Превращаем выход в путь
+            grid[endPoint.y -1, endPoint.x] = pathSymbol;
+            grid[endPoint.y, endPoint.x -1] = pathSymbol;
         }
     }
 

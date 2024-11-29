@@ -17,6 +17,9 @@ namespace MutableMaze
         [JsonPropertyName("timer")]
         public TimerConfig Timer { get; set; }
 
+        [JsonPropertyName("medium")]
+        public MediumConfig Medium { get; set; }
+
         private static GameConfig instance;
 
         [JsonConstructor]
@@ -34,7 +37,7 @@ namespace MutableMaze
             }
         }
 
-        public void LoadConfig(string filePath, GameConfig savedConfig = null)
+        public void LoadConfig(string filePath)
         {
             string json = File.ReadAllText(filePath);
             GameConfig config = JsonSerializer.Deserialize<GameConfig>(json);
@@ -43,6 +46,13 @@ namespace MutableMaze
             Player = config.Player;
             Difficulty = config.Difficulty;
             Timer = config.Timer;
+            Medium = config.Medium;
+        }
+
+        public void SaveConfig(string filePath)
+        {
+            string json = JsonSerializer.Serialize(this, options: new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
         }
     }
 
@@ -114,4 +124,13 @@ namespace MutableMaze
         [JsonPropertyName("timePerMove")]
         public int TimePerMove { get; set; }
     }
+
+    public class MediumConfig
+    {
+        [JsonPropertyName("RegenerationActivationRange")]
+        public double RegenerationActivationRange { get; set; }
+        [JsonPropertyName("CountOfRegeneratedStructures")]
+        public double CountOfRegeneratedStructures { get; set; }
+    }
+
 }

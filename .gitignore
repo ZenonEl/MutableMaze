@@ -36,3 +36,4 @@
 *.sln
 /GameSaves/History
 /GameSaves/SavedGrid
+/GameSaves
