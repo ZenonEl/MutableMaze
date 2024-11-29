@@ -1,86 +1,126 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MutableMaze
 {
     public class GameDataWriter
     {
-        private int Timer { get; set; }
-        private int AllMoves { get; set; }
-        private static GameConfig config = GameConfig.Instance;
+        public static GameConfig config = GameConfig.Instance;
 
-        // Метод для сохранения истории игры
-        static public async Task SaveGameHistory(int timer, int allMoves)
+        static public async Task SaveGameHistory(int saved_timer, int allMoves)
         {
             string filePath = $"GameSaves/History/history_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json";
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            // Создаем объект для сохранения данных
-            var gameData = new GameHistoryData
+            var gameData = new GameSaveData
             {
-                Timer = timer,
-                AllMoves = allMoves,
-                Config = config // Предполагается, что config сериализуемый
+                saved_timer = saved_timer,
+                allMoves = allMoves,
+                config = config
             };
 
             await WriteJsonToFileAsync(filePath, gameData);
         }
 
-        // Метод для записи данных в JSON файл
-        static async Task WriteJsonToFileAsync(string filePath, GameHistoryData data)
-        {
-            var options = new JsonSerializerOptions { WriteIndented = true }; // Для форматирования
-            string json = JsonSerializer.Serialize(data, options);
-
-            // Используем using для безопасного открытия файла
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                await writer.WriteAsync(json); // Асинхронная запись строки
-            }
-        }
-
-        static public async Task CreateSaveFile()
+        static public async Task CreateSaveFile(int timer, int allMoves, int movesToRegenMaze, (int x, int y) currentPlayerPosition, char[,] grid)
         {
             Console.WriteLine("Creating save file...");
             string filePath = $"GameSaves/saved_game_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json";
+            var gameData = new GameSaveData
+            {
+                saved_timer = timer,
+                allMoves = allMoves,
+                movesToRegenMaze = movesToRegenMaze,
+                currentPlayerPositionX = currentPlayerPosition.x,
+                currentPlayerPositionY = currentPlayerPosition.y,
+                config = config
+            };
+            await WriteJsonToFileAsync(filePath, gameData);
+            SaveGridToCsv($"GameSaves/SavedGrid/saved_grid_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.csv", grid);
+
+        }
+
+        static async Task WriteJsonToFileAsync(string filePath, GameSaveData data)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(data, options);
+
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                await writer.WriteAsync(json);
+            }
+        }
+    
+    public static void SaveGridToCsv(string filePath, char[,] Grid)
+    {
+        using (var writer = new StreamWriter(filePath))
+        {
+            for (int i = 0; i < config.Maze.Height; i++)
+            {
+                for (int j = 0; j < config.Maze.Width; j++)
+                {
+                    writer.Write(Grid[i, j]);
+                }
+                writer.WriteLine();
+            }
         }
     }
 
-
-public interface GameData {}
-
-    public class GameHistoryData : GameData
+    public static ReGeneratedMaze LoadDataFromSaveFile(string filePath)
     {
-        public int Timer { get; set; }
-        public int AllMoves { get; set; }
-        public GameConfig Config { get; set; }
+        int currentPlayerPositionX = 0;
+        int currentPlayerPositionY = 0;
+
+        string json = File.ReadAllText(filePath);
+        using (JsonDocument doc = JsonDocument.Parse(json))
+        {
+            JsonElement root = doc.RootElement;
+
+            int saved_timer = root.GetProperty("saved_timer").GetInt32();
+            int allMoves = root.GetProperty("allMoves").GetInt32();
+            int movesToRegenMaze = root.GetProperty("movesToRegenMaze").GetInt32();
+            currentPlayerPositionX = root.GetProperty("currentPlayerPositionX").GetInt32();
+            currentPlayerPositionY = root.GetProperty("currentPlayerPositionY").GetInt32();
+            config = root.GetProperty("config").Deserialize<GameConfig>();
+
+            Console.WriteLine($"Timer: {saved_timer}");
+            Console.WriteLine($"All Moves: {allMoves}");
+            Console.WriteLine($"Moves To Regen Maze: {movesToRegenMaze}");
+            Console.WriteLine($"Current Player Position: ({currentPlayerPositionX}, {currentPlayerPositionY})");
+            Console.WriteLine($"Config: {config.Maze.Width}, {config.Maze.Height}, {config.Maze.Symbols.Start}, {config.Maze.Symbols.Exit}, {config.Maze.Symbols.Wall}, {config.Maze.Symbols.Path}, {config.Player.Symbol}, {config.Maze.RegenerationTrigger.Type}");
+        }
+        return new ReGeneratedMaze(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
+                        (currentPlayerPositionX, currentPlayerPositionY), config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, 
+                        config.Maze.Symbols.Path, config.Player.Symbol);
     }
 
-    public class GameSaveData : GameData  // Для отрисовки надо: грид позиция игрока точки старта выхода и символы 
+    public static char[,] LoadGridFromCsv(string filePath)
     {
-        public int Timer { get; set; }
-        public int AllMoves { get; set; }
-        // Сетка
-        public char[,] grid;
-        private int width;
-        private int height;
-        
-        // Фиксированные точки
-        public (int x, int y) startPoint;
-        public (int x, int y) endPoint;
-        public (int x, int y) currentPlayerPosition;
+        char[,] Grid = new char[config.Maze.Height, config.Maze.Width];
+        using (var reader = new StreamReader(filePath))
+        {
+            for (int i = 0; i < config.Maze.Height; i++)
+            {
+                var line = reader.ReadLine();
+                if (line == null) break;
 
-        // Символы
-        private char wallSymbol;
-        private char pathSymbol;
-        private char playerSymbol;
-        private char startSymbol;
-        private char endSymbol;
+                for (int j = 0; j < config.Maze.Width; j++)
+                {
+                    Grid[i, j] = line[j];
+                }
+            }
         }
+        return Grid;
+    
+    }
 
-    // Класс для хранения данных игры
-
+    public class GameSaveData
+    {
+        public int saved_timer { get; set; }
+        public int allMoves { get; set; }
+        public int movesToRegenMaze { get; set; }
+        public int currentPlayerPositionX { get; set; }
+        public int currentPlayerPositionY { get; set; }
+        public GameConfig config { get; set; }
+    }
+    }
 }

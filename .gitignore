@@ -35,3 +35,4 @@
 /obj
 *.sln
 /GameSaves/History
+/GameSaves/SavedGrid

@@ -1,44 +1,67 @@
-using System;
+
 
 namespace MutableMaze
 {
     public class GameLogic
     {
+        public static List<string> allSavesFiles = []; 
         private static GameConfig config = GameConfig.Instance;
-        private static Maze maze = new Maze(config.Maze.Width, config.Maze.Height, config.Maze.Symbols.Wall, config.Maze.Symbols.Path, config.Player.Symbol, config.Maze.Symbols.Start, config.Maze.Symbols.Exit);
+        private static ReGeneratedMaze maze = new(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
+                        (config.Player.StartX, config.Player.StartY), config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, 
+                        config.Maze.Symbols.Path, config.Player.Symbol);
+
         private static int movesToRegenMaze = 0;
         private static int allmoves = 0;
 
         public static void StartGame()
         {
-            Console.Clear();
             maze.PrintMaze();
             ProcessGameInputTriggers();
         }
 
         public static void LoadGame()
         {
-            Console.WriteLine("Loading game...");
+
+            string[] jsonFiles = Directory.GetFiles("GameSaves", "*.json");
+            int index = 0;
+            int choice;
+            string filename;
+            Console.WriteLine("Your saves:");
+            foreach (string file in jsonFiles)
+            {
+                filename = Path.GetFileName(file);
+                Console.WriteLine($"{index}. {filename}"); 
+                allSavesFiles.Add(filename);
+                index++;
+            }
+            Console.WriteLine("Enter the number of the save you want to load:");
+            choice = int.Parse(Console.ReadLine());
+            Console.WriteLine(allSavesFiles[choice]);
+
+            config.LoadConfig($"GameSaves/{allSavesFiles[choice]}");
+            maze = GameDataWriter.LoadDataFromSaveFile($"GameSaves/{allSavesFiles[choice]}");
+            maze.grid = GameDataWriter.LoadGridFromCsv($"GameSaves/SavedGrid/{Path.ChangeExtension(allSavesFiles[choice].Replace("game", "grid"), ".csv")}");
+            config = GameDataWriter.config;
+            maze.PrintMaze();
+            ProcessGameInputTriggers();
         }
 
         public static void ProcessGameInputTriggers()
         {
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true); // true для скрытия нажатой клавиши
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-            // Получаем символ нажатой клавиши
             string keyPressed = keyInfo.Key.ToString();
             string moveInput = keyPressed;
 
-            // Проверяем, были ли нажаты модификаторы
             if (keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
             {
-                keyPressed = "Ctrl" + keyPressed; // Добавляем информацию о Ctrl
+                keyPressed = "Ctrl" + keyPressed;
                 Console.WriteLine(keyPressed);
                 switch (keyPressed)
                 {
                     case "CtrlS":
-                        Console.WriteLine("Saving game...");
-                        GameDataWriter.CreateSaveFile().GetAwaiter().GetResult();
+                        Console.WriteLine($"Saving game... {maze.grid}");
+                        GameDataWriter.CreateSaveFile(0, allmoves, movesToRegenMaze, maze.currentPlayerPosition, maze.grid).GetAwaiter().GetResult();
                         break;
                 }
             }

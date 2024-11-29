@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -36,15 +34,15 @@ namespace MutableMaze
             }
         }
 
-        public void LoadConfig(string filePath)
+        public void LoadConfig(string filePath, GameConfig savedConfig = null)
         {
             string json = File.ReadAllText(filePath);
             GameConfig config = JsonSerializer.Deserialize<GameConfig>(json);
 
-            this.Maze = config.Maze;
-            this.Player = config.Player;
-            this.Difficulty = config.Difficulty;
-            this.Timer = config.Timer;
+            Maze = config.Maze;
+            Player = config.Player;
+            Difficulty = config.Difficulty;
+            Timer = config.Timer;
         }
     }
 

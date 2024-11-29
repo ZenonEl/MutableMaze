@@ -4,6 +4,9 @@ namespace MutableMaze
 {
     public class GameMenu
     {
+        public static List<string> allHistoryFiles = []; 
+        private static GameConfig config = GameConfig.Instance;
+
         public static void PrintMenu()
         {
             Console.Clear();
@@ -18,23 +21,39 @@ namespace MutableMaze
         
         public static void PrintHistory()
         {
-            Console.WriteLine("Enter the name of the save file:");
+            DirectoryInfo directoryInfo = new DirectoryInfo("GameSaves/History");
+
+            FileInfo[] files = directoryInfo.GetFiles();
+            int index = 0;
+            Console.WriteLine("History:");
+            foreach (FileInfo file in files)
+            {
+                Console.WriteLine($"{index}. {file.Name}");
+                allHistoryFiles.Add(file.Name);
+                index++;
+            }
+            Console.ReadLine();
         }
 
         public static void PrintSettings()
         {
             Console.WriteLine("Your current settings:");
+            Console.WriteLine($@"{config.Maze.Width} {config.Maze.Height} 
+{config.Maze.Symbols.Start} {config.Maze.Symbols.Exit} 
+{config.Maze.Symbols.Wall} {config.Maze.Symbols.Path} 
+{config.Player.Symbol} 
+{config.Maze.RegenerationTrigger.Type} {config.Maze.RegenerationTrigger.Value}");
+            Console.ReadLine();
         }
 
         public static void PrintHelp()
         {
-            Console.Clear();
             Console.WriteLine("Help Menu:");
             Console.WriteLine("1. How to play");
             Console.WriteLine("2. Controls");
             Console.WriteLine("3. Back to game menu");
             Console.WriteLine("Press enter to continue");
-            string _ = Console.ReadLine();
+            Console.ReadLine();
             PrintMenu();
             GetChoiceInput();
         }
@@ -49,21 +68,34 @@ namespace MutableMaze
             switch (input)
             {
                 case "1":
+                    Console.Clear();
                     GameLogic.StartGame(); // v1 done
                     PrintMenu();
                     GetChoiceInput();
                     break;
                 case "2":
-                    GameLogic.LoadGame();
+                    Console.Clear();
+                    GameLogic.LoadGame(); // v1 done
+                    PrintMenu();
+                    GetChoiceInput();
                     break;
                 case "3":
+                    Console.Clear();
                     PrintHelp(); // v1 done
+                    PrintMenu();
+                    GetChoiceInput();
                     break;
                 case "4":
-                    PrintHistory();
+                    Console.Clear();
+                    PrintHistory(); // v1 done
+                    PrintMenu();
+                    GetChoiceInput();
                     break;
                 case "5":
+                    Console.Clear();
                     PrintSettings();
+                    PrintMenu();
+                    GetChoiceInput();
                     break;
                 case "6": // done
                     Console.Clear();

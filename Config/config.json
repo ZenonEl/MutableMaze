@@ -1,7 +1,7 @@
 {
     "maze": {
-      "width": 11,
-      "height": 11,
+      "width": 51,
+      "height": 51,
       "symbols": {
         "wall": "#",
         "path": ".",
@@ -10,7 +10,7 @@
       },
       "regenerationTrigger": {
         "type": "moves",
-        "value": 100
+        "value": 5
       }
     },
     "player": {
