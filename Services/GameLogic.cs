@@ -4,7 +4,6 @@ namespace MutableMaze
 {
     public class GameLogic
     {
-        public static List<string> allSavesFiles = []; 
         private static GameConfig config = GameConfig.Instance;
         private static ReGeneratedMaze maze;
         private static int movesToRegenMaze = 0;
@@ -28,6 +27,7 @@ namespace MutableMaze
             int choice;
             string filename;
             string[] jsonFiles = Directory.GetFiles("GameSaves", "*.json");
+            List<string> allSavesFiles = []; 
             
             Utils.WriteLine("Your saves:", ConsoleColor.Yellow);
             
@@ -38,9 +38,7 @@ namespace MutableMaze
                 allSavesFiles.Add(filename);
                 index++;
             }
-            
             Utils.WriteLine("Enter the number of the save you want to load or press enter to go back:", ConsoleColor.DarkCyan);
-            
             if (int.TryParse(Console.ReadLine(), out choice))
             {
                 if (choice < 0 || choice >= allSavesFiles.Count)
@@ -48,25 +46,28 @@ namespace MutableMaze
                     Utils.WriteLine("Incorrect input. Please enter a number from the list.", ConsoleColor.Red);
                     LoadGame();
                 }
+                else
+                {
+                    Console.WriteLine(allSavesFiles[choice]);
+
+                    maze = GameDataWriter.LoadDataFromSaveFile($"GameSaves/{allSavesFiles[choice]}");
+                    maze.grid = GameDataWriter.LoadGridFromCsv($"GameSaves/SavedGrid/{Path.ChangeExtension(allSavesFiles[choice].Replace("game", "grid"), ".csv")}");
+                    maze.PrintMaze();
+                    
+                    config.LoadConfig($"GameSaves/{allSavesFiles[choice]}");
+                    config = GameDataWriter.config;
+                    
+                    allmoves = GameDataWriter.allMoves;
+                    movesToRegenMaze = GameDataWriter.movesToRegenMaze;
+                    playerLastRegenerationPosition = (GameDataWriter.playerLastRegenerationPositionX, GameDataWriter.playerLastRegenerationPositionY);
+                    
+                    ProcessGameInputTriggers();
+                }
             }
             else
             {
                 return;
             }
-
-            Console.WriteLine(allSavesFiles[choice]);
-
-            maze = GameDataWriter.LoadDataFromSaveFile($"GameSaves/{allSavesFiles[choice]}");
-            maze.grid = GameDataWriter.LoadGridFromCsv($"GameSaves/SavedGrid/{Path.ChangeExtension(allSavesFiles[choice].Replace("game", "grid"), ".csv")}");
-            maze.PrintMaze();
-            
-            config.LoadConfig($"GameSaves/{allSavesFiles[choice]}");
-            config = GameDataWriter.config;
-            
-            allmoves = GameDataWriter.allMoves;
-            movesToRegenMaze = GameDataWriter.movesToRegenMaze;
-            playerLastRegenerationPosition = (GameDataWriter.playerLastRegenerationPositionX, GameDataWriter.playerLastRegenerationPositionY);
-            ProcessGameInputTriggers();
         }
 
         public static void ProcessGameInputTriggers()
@@ -131,10 +132,7 @@ namespace MutableMaze
                     maze.PrintMaze();
                     CheckRegenerationByGridRange(moveDirection);
                 }
-                Console.WriteLine("movesToRegenMaze");
-                Console.WriteLine(config.Maze.RegenerationTrigger.Value);
-                Console.WriteLine(movesToRegenMaze);
-                Console.WriteLine("movesToRegenMaze");
+ 
                 if (config.Maze.RegenerationTrigger.Value <= movesToRegenMaze)
                 {
                     ReGeneratedMaze reGeneratedMaze = new(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
@@ -150,8 +148,8 @@ namespace MutableMaze
                 if (maze.CheckPatchForExit(moveDirection))
                 {
                     GameDataWriter.SaveGameHistory(allmoves).GetAwaiter().GetResult();;
-                    Console.WriteLine($"You win! Your total moves: {allmoves}!");
-                    Console.WriteLine("Press enter to continue");
+                    Utils.WriteLine($"You win! Your total moves: {allmoves}!", ConsoleColor.Yellow);
+                    Utils.WriteLine("Press enter to continue", ConsoleColor.DarkCyan);
                     Console.ReadLine();
                     return;
                 }
@@ -166,11 +164,7 @@ namespace MutableMaze
             int distanceX = Math.Abs(currentPlayerPosition.x - playerLastRegenerationPosition.x);
             int distanceY = Math.Abs(currentPlayerPosition.y - playerLastRegenerationPosition.y);
             int totalDistance = distanceX + distanceY;
-            Console.WriteLine(totalDistance);
-            Console.WriteLine(stepsToCheck);
-            Console.WriteLine(movesToRegenMaze);
-            Console.WriteLine(config.Maze.RegenerationTrigger.Value);
-            Console.WriteLine($"{Math.Ceiling(config.Maze.RegenerationTrigger.Value / (config.Medium.RegenerationActivationRange * 10))}");
+
             if (totalDistance >= stepsToCheck)
             {
                 movesToRegenMaze += 1;

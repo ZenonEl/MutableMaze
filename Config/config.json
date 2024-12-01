@@ -1,7 +1,7 @@
 {
   "maze": {
-    "width": 101,
-    "height": 51,
+    "width": 11,
+    "height": 11,
     "symbols": {
       "wall": "#",
       "path": ".",

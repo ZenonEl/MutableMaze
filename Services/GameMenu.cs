@@ -53,7 +53,7 @@ Now a little bit about the features of the game. As the name suggests, the maze 
 
         public static void PrintSettings()
         {
-            Utils.WriteLine("Your current settings:", ConsoleColor.DarkCyan);
+            Utils.WriteLine("Your current settings:", ConsoleColor.Yellow);
             config.LoadConfig("Config/config.json");
             Console.WriteLine($@"1) Width and Height: {config.Maze.Width} {config.Maze.Height} 
 2) Start and Exit Symbols: {config.Maze.Symbols.Start} {config.Maze.Symbols.Exit} 
@@ -160,7 +160,7 @@ Example: 1 *press enter*
                     Console.Clear();
                     Environment.Exit(0);
                     break;
-                case "":
+                default:
                     Console.Clear();
                     PrintMenu();
                     GetChoiceInput();
