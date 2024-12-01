@@ -1,17 +1,19 @@
 {
   "maze": {
-    "width": 31,
-    "height": 31,
+    "width": 101,
+    "height": 51,
     "symbols": {
       "wall": "#",
       "path": ".",
       "start": "S",
-      "exit": "E"
+      "exit": "."
     },
     "regenerationTrigger": {
-      "type": "moves",
+      "PlayerLastRegenerationPositionY": 0,
       "value": 10
-    }
+    },
+    "PlayerLastRegenerationPositionX": 0,
+    "PlayerLastRegenerationPositionY": 0
   },
   "player": {
     "startX": 1,
@@ -20,11 +22,6 @@
   },
   "difficulty": {
     "level": "medium"
-  },
-  "timer": {
-    "mode": "increasing",
-    "initialTime": 0,
-    "timePerMove": 1
   },
   "medium": {
     "RegenerationActivationRange": 0.3,

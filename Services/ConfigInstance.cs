@@ -14,9 +14,6 @@ namespace MutableMaze
         [JsonPropertyName("difficulty")]
         public DifficultyConfig Difficulty { get; set; }
 
-        [JsonPropertyName("timer")]
-        public TimerConfig Timer { get; set; }
-
         [JsonPropertyName("medium")]
         public MediumConfig Medium { get; set; }
 
@@ -45,7 +42,6 @@ namespace MutableMaze
             Maze = config.Maze;
             Player = config.Player;
             Difficulty = config.Difficulty;
-            Timer = config.Timer;
             Medium = config.Medium;
         }
 
@@ -69,6 +65,10 @@ namespace MutableMaze
         
         [JsonPropertyName("regenerationTrigger")]
         public RegenerationTrigger RegenerationTrigger { get; set; }
+        [JsonPropertyName("PlayerLastRegenerationPositionX")]
+        public int PlayerLastRegenerationPositionX { get; set; }
+        [JsonPropertyName("PlayerLastRegenerationPositionY")]
+        public int PlayerLastRegenerationPositionY { get; set; }
     }
 
     public class MazeSymbols
@@ -88,9 +88,7 @@ namespace MutableMaze
 
     public class RegenerationTrigger
     {
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
-        
+        public int PlayerLastRegenerationPositionY { get; set; }   
         [JsonPropertyName("value")]
         public int Value { get; set; }
     }
@@ -111,18 +109,6 @@ namespace MutableMaze
     {
         [JsonPropertyName("level")]
         public string Level { get; set; }
-    }
-
-    public class TimerConfig
-    {
-        [JsonPropertyName("mode")]
-        public string Mode { get; set; }
-        
-        [JsonPropertyName("initialTime")]
-        public int InitialTime { get; set; }
-        
-        [JsonPropertyName("timePerMove")]
-        public int TimePerMove { get; set; }
     }
 
     public class MediumConfig

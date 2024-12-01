@@ -5,15 +5,18 @@ namespace MutableMaze
     public class GameDataWriter
     {
         public static GameConfig config = GameConfig.Instance;
+        public static int movesToRegenMaze = 0;
+        public static int allMoves = 0;
+        public static int playerLastRegenerationPositionX = -1;
+        public static int playerLastRegenerationPositionY = -1;
 
-        static public async Task SaveGameHistory(int saved_timer, int allMoves)
+        static public async Task SaveGameHistory(int allMoves)
         {
             string filePath = $"GameSaves/History/history_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json";
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             var gameData = new GameSaveData
             {
-                saved_timer = saved_timer,
                 allMoves = allMoves,
                 config = config
             };
@@ -21,13 +24,12 @@ namespace MutableMaze
             await WriteJsonToFileAsync(filePath, gameData);
         }
 
-        static public async Task CreateSaveFile(int timer, int allMoves, int movesToRegenMaze, (int x, int y) currentPlayerPosition, char[,] grid)
+        static public async Task CreateSaveFile(int allMoves, int movesToRegenMaze, (int x, int y) currentPlayerPosition, char[,] grid)
         {
             Console.WriteLine("Creating save file...");
             string filePath = $"GameSaves/saved_game_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json";
             var gameData = new GameSaveData
             {
-                saved_timer = timer,
                 allMoves = allMoves,
                 movesToRegenMaze = movesToRegenMaze,
                 currentPlayerPositionX = currentPlayerPosition.x,
@@ -75,18 +77,20 @@ namespace MutableMaze
         {
             JsonElement root = doc.RootElement;
 
-            int saved_timer = root.GetProperty("saved_timer").GetInt32();
-            int allMoves = root.GetProperty("allMoves").GetInt32();
-            int movesToRegenMaze = root.GetProperty("movesToRegenMaze").GetInt32();
+            allMoves = root.GetProperty("allMoves").GetInt32();
+            movesToRegenMaze = root.GetProperty("movesToRegenMaze").GetInt32();
             currentPlayerPositionX = root.GetProperty("currentPlayerPositionX").GetInt32();
             currentPlayerPositionY = root.GetProperty("currentPlayerPositionY").GetInt32();
+            playerLastRegenerationPositionX = root.GetProperty("PlayerLastRegenerationPositionX").GetInt32();
+            playerLastRegenerationPositionY = root.GetProperty("PlayerLastRegenerationPositionY").GetInt32();
+
             config = root.GetProperty("config").Deserialize<GameConfig>();
 
-            Console.WriteLine($"Timer: {saved_timer}");
             Console.WriteLine($"All Moves: {allMoves}");
             Console.WriteLine($"Moves To Regen Maze: {movesToRegenMaze}");
             Console.WriteLine($"Current Player Position: ({currentPlayerPositionX}, {currentPlayerPositionY})");
-            Console.WriteLine($"Config: {config.Maze.Width}, {config.Maze.Height}, {config.Maze.Symbols.Start}, {config.Maze.Symbols.Exit}, {config.Maze.Symbols.Wall}, {config.Maze.Symbols.Path}, {config.Player.Symbol}, {config.Maze.RegenerationTrigger.Type}");
+            Console.WriteLine($"Config: {config.Maze.Width}, {config.Maze.Height}, {config.Maze.Symbols.Start}, {config.Maze.Symbols.Exit}, {config.Maze.Symbols.Wall}, {config.Maze.Symbols.Path}, {config.Player.Symbol}");
+            Console.WriteLine($"Last Regeneration Position: {playerLastRegenerationPositionX}, {playerLastRegenerationPositionY}");
         }
         return new ReGeneratedMaze(config.Maze.Width, config.Maze.Height, (1, 1), (config.Maze.Width - 2, config.Maze.Height - 2), 
                         (currentPlayerPositionX, currentPlayerPositionY), config.Maze.Symbols.Start, config.Maze.Symbols.Exit, config.Maze.Symbols.Wall, 
@@ -115,7 +119,6 @@ namespace MutableMaze
 
     public class GameSaveData
     {
-        public int saved_timer { get; set; }
         public int allMoves { get; set; }
         public int movesToRegenMaze { get; set; }
         public int currentPlayerPositionX { get; set; }
