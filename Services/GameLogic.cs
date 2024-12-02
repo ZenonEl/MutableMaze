@@ -78,12 +78,12 @@ namespace MutableMaze
             if (keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
             {
                 keyPressed = "Ctrl" + keyPressed;
-                Console.WriteLine(keyPressed);
                 switch (keyPressed)
                 {
                     case "CtrlS":
-                        Console.WriteLine($"Saving game... {maze.grid}");
+                        Console.WriteLine("Saving game...");
                         GameDataWriter.CreateSaveFile(allmoves, movesToRegenMaze, maze.currentPlayerPosition, maze.grid, playerLastRegenerationPosition).GetAwaiter().GetResult();
+                        Utils.WriteLine("Just continue press movement key", ConsoleColor.DarkCyan);
                         break;
                 }
             }

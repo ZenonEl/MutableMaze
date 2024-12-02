@@ -1,0 +1,31 @@
+{
+  "color": {
+    "coloredEnabled": true,
+    "defaultColor": "White"
+  },
+  "maze": {
+    "width": 11,
+    "height": 11,
+    "symbols": {
+      "wall": "#",
+      "path": ".",
+      "start": "S",
+      "exit": "."
+    },
+    "regenerationTrigger": {
+      "value": 10
+    }
+  },
+  "player": {
+    "startX": 1,
+    "startY": 1,
+    "symbol": "P"
+  },
+  "difficulty": {
+    "level": "medium"
+  },
+  "medium": {
+    "RegenerationActivationRange": 0.3,
+    "CountOfRegeneratedStructures": 1
+  }
+}
