@@ -1,5 +1,3 @@
-
-
 namespace MutableMaze
 {
     public class GameLogic
@@ -85,7 +83,7 @@ namespace MutableMaze
                 {
                     case "CtrlS":
                         Console.WriteLine($"Saving game... {maze.grid}");
-                        GameDataWriter.CreateSaveFile(allmoves, movesToRegenMaze, maze.currentPlayerPosition, maze.grid).GetAwaiter().GetResult();
+                        GameDataWriter.CreateSaveFile(allmoves, movesToRegenMaze, maze.currentPlayerPosition, maze.grid, playerLastRegenerationPosition).GetAwaiter().GetResult();
                         break;
                 }
             }

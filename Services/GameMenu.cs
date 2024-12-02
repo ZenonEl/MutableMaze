@@ -1,5 +1,3 @@
-using System;
-
 namespace MutableMaze
 {
     public class GameMenu
@@ -25,12 +23,11 @@ Now a little bit about the features of the game. As the name suggests, the maze 
         {
             Console.Clear();
             Utils.WriteLine("Game Menu:", ConsoleColor.Yellow);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("1. Play");
-            Console.WriteLine("2. Load Save");
-            Console.WriteLine("3. Help");
-            Console.WriteLine("4. History");
-            Console.WriteLine("5. Settings");
+            Utils.WriteLine("1. Play", ConsoleColor.Green);
+            Utils.WriteLine("2. Load Save", ConsoleColor.Green);
+            Utils.WriteLine("3. Help", ConsoleColor.Green);
+            Utils.WriteLine("4. History", ConsoleColor.Green);
+            Utils.WriteLine("5. Settings", ConsoleColor.Green);
             Utils.WriteLine("6. Exit", ConsoleColor.Red);
         }
         

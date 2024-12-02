@@ -24,7 +24,7 @@ namespace MutableMaze
             await WriteJsonToFileAsync(filePath, gameData);
         }
 
-        static public async Task CreateSaveFile(int allMoves, int movesToRegenMaze, (int x, int y) currentPlayerPosition, char[,] grid)
+        static public async Task CreateSaveFile(int allMoves, int movesToRegenMaze, (int x, int y) currentPlayerPosition, char[,] grid, (int x, int y) playerLastRegenerationPosition)
         {
             Console.WriteLine("Creating save file...");
             string filePath = $"GameSaves/saved_game_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json";
@@ -34,6 +34,8 @@ namespace MutableMaze
                 movesToRegenMaze = movesToRegenMaze,
                 currentPlayerPositionX = currentPlayerPosition.x,
                 currentPlayerPositionY = currentPlayerPosition.y,
+                PlayerLastRegenerationPositionX = playerLastRegenerationPosition.x,
+                PlayerLastRegenerationPositionY = playerLastRegenerationPosition.y,
                 config = config
             };
             await WriteJsonToFileAsync(filePath, gameData);
@@ -123,6 +125,8 @@ namespace MutableMaze
         public int movesToRegenMaze { get; set; }
         public int currentPlayerPositionX { get; set; }
         public int currentPlayerPositionY { get; set; }
+        public int PlayerLastRegenerationPositionX { get; set; }
+        public int PlayerLastRegenerationPositionY { get; set; }
         public GameConfig config { get; set; }
     }
     }

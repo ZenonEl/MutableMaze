@@ -1,4 +1,8 @@
 {
+  "color": {
+    "coloredEnabled": true,
+    "defaultColor": "White"
+  },
   "maze": {
     "width": 11,
     "height": 11,

@@ -5,6 +5,8 @@ namespace MutableMaze
 {
     public class GameConfig
     {
+        [JsonPropertyName("color")]
+        public ColorConfig Color { get; set; }
         [JsonPropertyName("maze")]
         public MazeConfig Maze { get; set; }
 
@@ -39,6 +41,7 @@ namespace MutableMaze
             string json = File.ReadAllText(filePath);
             GameConfig config = JsonSerializer.Deserialize<GameConfig>(json);
 
+            Color = config.Color;
             Maze = config.Maze;
             Player = config.Player;
             Difficulty = config.Difficulty;
@@ -51,7 +54,14 @@ namespace MutableMaze
             File.WriteAllText(filePath, json);
         }
     }
+    public class ColorConfig
+    {
+        [JsonPropertyName("coloredEnabled")]
+        public bool ColoredEnabled { get; set; }
 
+        [JsonPropertyName("defaultColor")]
+        public string DefaultColor { get; set; }
+    }
     public class MazeConfig
     {
         [JsonPropertyName("width")]
@@ -65,10 +75,7 @@ namespace MutableMaze
         
         [JsonPropertyName("regenerationTrigger")]
         public RegenerationTrigger RegenerationTrigger { get; set; }
-        [JsonPropertyName("PlayerLastRegenerationPositionX")]
-        public int PlayerLastRegenerationPositionX { get; set; }
-        [JsonPropertyName("PlayerLastRegenerationPositionY")]
-        public int PlayerLastRegenerationPositionY { get; set; }
+
     }
 
     public class MazeSymbols
@@ -88,7 +95,6 @@ namespace MutableMaze
 
     public class RegenerationTrigger
     {
-        public int PlayerLastRegenerationPositionY { get; set; }   
         [JsonPropertyName("value")]
         public int Value { get; set; }
     }

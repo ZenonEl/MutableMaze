@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MutableMaze
+﻿namespace MutableMaze
 {
     class Program
     {
